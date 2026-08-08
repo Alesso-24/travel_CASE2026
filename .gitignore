@@ -1,0 +1,12 @@
+# Archivos de planificación personal — NO subir (contienen datos sensibles)
+00_PERFIL.md
+01_EVENTO.md
+02_ITINERARIO.md
+03_FINANZAS.md
+04_TAREAS.md
+05_DOCUMENTOS.md
+06_PLAN_VIAJE.md
+
+# Sistema
+.DS_Store
+Thumbs.db
