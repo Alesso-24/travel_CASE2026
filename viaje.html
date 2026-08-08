@@ -1,6 +1,7 @@
 <title>Alessandro en Asia — IEEE CASE 2026</title>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d13">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
@@ -24,7 +25,7 @@
     --radius: 16px;
     --maxw: 1180px;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   html{scroll-behavior:smooth;}
   body{
     background:var(--bg);
@@ -32,24 +33,55 @@
     font-family:'Inter',system-ui,sans-serif;
     line-height:1.5;
     overflow-x:hidden;
+    touch-action:manipulation;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
   }
   ::selection{ background:var(--gold-soft); color:var(--gold); }
 
   a{color:inherit; text-decoration:none;}
   .serif{font-family:'Fraunces', serif;}
 
-  img.credit-src{width:100%; height:100%; object-fit:cover; display:block;}
+  img.credit-src{width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in;}
   .img-wrap{position:relative; overflow:hidden; border-radius:var(--radius); background:linear-gradient(135deg,#1b2230,#11151d);}
+  .img-wrap::after{
+    content:'\f00e'; font-family:'Font Awesome 6 Free'; font-weight:900; position:absolute; top:10px; right:10px;
+    width:28px; height:28px; border-radius:50%; background:rgba(10,13,19,.55); backdrop-filter:blur(4px);
+    color:#fff; font-size:11px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; pointer-events:none;
+  }
+  .img-wrap:hover::after{ opacity:1; }
+  @media (hover:none){ .img-wrap::after{ opacity:.85; } }
   .img-cred{
     position:absolute; bottom:0; right:0; font-size:10px; color:rgba(255,255,255,.55);
     background:rgba(0,0,0,.35); padding:3px 8px; border-top-left-radius:8px; letter-spacing:.02em;
+  }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:1000; background:rgba(6,8,12,.92); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    padding:max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .lightbox.open{ opacity:1; pointer-events:auto; }
+  .lightbox img{
+    max-width:100%; max-height:82vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.5);
+    transform:scale(.94); transition:transform .25s ease;
+  }
+  .lightbox.open img{ transform:scale(1); }
+  .lightbox-cap{ position:absolute; bottom:28px; left:0; right:0; text-align:center; color:var(--text-dim); font-size:12.5px; padding:0 20px; }
+  .lightbox-close{
+    position:absolute; top:max(20px, env(safe-area-inset-top)); right:max(20px, env(safe-area-inset-right));
+    width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
+    color:#fff; font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer;
   }
 
   /* ---------- NAV ---------- */
   nav{
     position:fixed; top:0; left:0; right:0; z-index:100;
     display:flex; align-items:center; justify-content:space-between;
-    padding:16px 32px;
+    padding:14px clamp(16px,4vw,32px);
+    padding-top:max(14px, env(safe-area-inset-top));
     background:rgba(10,13,19,.7);
     backdrop-filter:blur(14px);
     border-bottom:1px solid transparent;
@@ -78,19 +110,19 @@
     .nav-toggle{ display:block; background:none; border:none; color:var(--text); font-size:20px; }
   }
 
-  section{ padding:120px 32px; max-width:var(--maxw); margin:0 auto; position:relative; }
+  section{ padding:clamp(64px,14vw,120px) clamp(18px,5vw,32px); max-width:var(--maxw); margin:0 auto; position:relative; }
   .eyebrow{
     display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:600;
     letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:18px;
   }
   .eyebrow::before{ content:''; width:20px; height:1px; background:var(--gold); }
-  h2.title{ font-family:'Fraunces',serif; font-weight:600; font-size:clamp(28px,4vw,44px); letter-spacing:-.01em; margin-bottom:16px; }
-  p.lead{ color:var(--text-dim); font-size:17px; max-width:640px; margin-bottom:56px; }
+  h2.title{ font-family:'Fraunces',serif; font-weight:600; font-size:clamp(26px,7vw,44px); letter-spacing:-.01em; margin-bottom:16px; }
+  p.lead{ color:var(--text-dim); font-size:clamp(15px,4vw,17px); max-width:640px; margin-bottom:clamp(32px,6vw,56px); }
 
   /* ---------- HERO ---------- */
   .hero{
     min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:140px 24px 80px; max-width:900px; position:relative;
+    text-align:center; padding:clamp(100px,26vw,140px) clamp(16px,6vw,24px) clamp(60px,14vw,80px); max-width:900px; position:relative;
   }
   .hero::before{
     content:''; position:absolute; inset:-20% -20% auto -20%; height:700px;
@@ -131,6 +163,7 @@
   /* ---------- ROUTE MAP ---------- */
   .route-wrap{ overflow-x:auto; padding-bottom:20px; margin:0 -8px; }
   .route-svg-box{ min-width:920px; padding:0 8px; }
+  .route-row{ display:flex; justify-content:space-between; }
   .route-city{ text-align:center; width:150px; }
   .route-city .dot{
     width:16px; height:16px; border-radius:50%; background:var(--card); border:2px solid var(--gold);
@@ -140,6 +173,24 @@
   .route-city .city-name{ font-weight:700; font-size:14px; }
   .route-city .city-date{ font-size:11px; color:var(--text-faint); margin-top:2px; }
   .route-city .city-flag{ font-size:20px; margin-bottom:6px; }
+
+  @media (max-width:680px){
+    .route-wrap{ overflow-x:visible; margin:0; }
+    .route-svg-box{ min-width:0; padding:0; }
+    .route-svg-box svg{ display:none; }
+    .route-row{ flex-direction:column; gap:0; }
+    .route-city{
+      width:100%; text-align:left; display:flex; align-items:center; gap:16px;
+      padding:12px 0; position:relative;
+    }
+    .route-city::after{
+      content:''; position:absolute; left:26px; top:66px; bottom:-12px; width:2px; background:var(--border); z-index:0;
+    }
+    .route-city.major::after{ left:30px; }
+    .route-city:last-child::after{ display:none; }
+    .route-thumb{ margin:0; flex-shrink:0; }
+    .route-city .city-name{ font-size:15px; }
+  }
 
   .route-legend{ display:flex; gap:24px; flex-wrap:wrap; margin-top:36px; font-size:12px; color:var(--text-dim); }
   .route-legend span{ display:inline-flex; align-items:center; gap:6px; }
@@ -159,7 +210,7 @@
   .tl-item:last-child .tl-line{ display:none; }
   .tl-card{
     background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    padding:22px 24px; margin:12px 0 24px; display:grid; gap:16px;
+    padding:clamp(16px,4vw,22px) clamp(16px,4vw,24px); margin:12px 0 24px; display:grid; gap:16px;
   }
   .tl-card.has-img{ grid-template-columns:1fr 200px; align-items:center; }
   .tl-card h3{ font-size:16px; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
@@ -172,23 +223,23 @@
     .tl-img{ height:160px; order:-1; }
   }
 
-  /* ---------- IEEE / SHENYANG ---------- */
-  .ieee-hero{
-    border-radius:24px; overflow:hidden; position:relative; height:360px; margin-bottom:48px;
+  /* ---------- COVER BANNER (reusable section hero image) ---------- */
+  .cover-banner{
+    border-radius:24px; overflow:hidden; position:relative; height:clamp(220px,42vw,400px); margin-bottom:40px;
     border:1px solid var(--border);
   }
-  .ieee-hero img{ width:100%; height:100%; object-fit:cover; filter:brightness(.5) saturate(1.05); }
-  .ieee-hero-content{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:36px; }
+  .cover-banner img{ width:100%; height:100%; object-fit:cover; filter:brightness(.52) saturate(1.05); }
+  .cover-banner-content{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:clamp(18px,4vw,36px); }
   .venue-badge{
     display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.08);
     backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.15); padding:6px 14px; border-radius:100px;
-    font-size:12px; font-weight:600; width:fit-content; margin-bottom:14px;
+    font-size:11.5px; font-weight:600; width:fit-content; margin-bottom:14px;
   }
-  .ieee-hero-content h3{ font-family:'Fraunces',serif; font-size:clamp(22px,3vw,32px); font-weight:600; max-width:560px; }
+  .cover-banner-content h3{ font-family:'Fraunces',serif; font-size:clamp(20px,4.6vw,32px); font-weight:600; max-width:560px; }
 
   .paper-card{
     background:linear-gradient(155deg, var(--card-hi), var(--card));
-    border:1px solid var(--border); border-radius:var(--radius); padding:36px;
+    border:1px solid var(--border); border-radius:var(--radius); padding:clamp(22px,5vw,36px);
     position:relative; overflow:hidden;
   }
   .paper-card::before{
@@ -219,7 +270,7 @@
 
   /* ---------- HERO BACKGROUND ---------- */
   .hero-bg{ position:absolute; inset:0; z-index:-1; overflow:hidden; }
-  .hero-bg img{ width:100%; height:100%; object-fit:cover; opacity:.28; filter:saturate(1.1) contrast(1.05); }
+  .hero-bg img{ width:100%; height:100%; object-fit:cover; opacity:.42; filter:saturate(1.1) contrast(1.05); will-change:transform; cursor:default; }
   .hero-bg::after{
     content:''; position:absolute; inset:0;
     background:linear-gradient(180deg, rgba(10,13,19,.55) 0%, var(--bg) 92%), radial-gradient(ellipse at 50% 30%, transparent 0%, var(--bg) 78%);
@@ -291,6 +342,14 @@
   <h2 class="title">Puebla → Seúl → Shenyang → Puebla</h2>
   <p class="lead">Un vuelo transpacífico hasta Corea, una escala de una noche en Seúl, y un salto corto hasta el noreste de China para llegar a la sede del congreso.</p>
 
+  <div class="cover-banner">
+    <img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Gran_Pir%C3%A1mide_de_Cholula,_Puebla,_M%C3%A9xico,_2013-10-12,_DD_10.JPG?width=1400" alt="Gran Pirámide de Cholula, Puebla — punto de partida del viaje">
+    <div class="cover-banner-content">
+      <div class="venue-badge"><i class="fa-solid fa-location-dot"></i> Puebla, México</div>
+      <h3>Todo empieza aquí, a los pies de la Gran Pirámide de Cholula</h3>
+    </div>
+  </div>
+
   <div class="route-wrap">
     <div class="route-svg-box">
       <svg width="100%" height="70" viewBox="0 0 920 70" preserveAspectRatio="none" style="display:block; overflow:visible;">
@@ -307,9 +366,9 @@
           <text x="-8" y="5" font-size="16" fill="#e3b464">✈</text>
         </g>
       </svg>
-      <div style="display:flex; justify-content:space-between;">
+      <div class="route-row">
         <div class="route-city major"><div class="route-thumb"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Zocalo_de_Puebla.JPG?width=200" alt="Puebla"></div><div class="city-name">Puebla</div><div class="city-date">13 ago · sale 16:00</div></div>
-        <div class="route-city"><div class="route-thumb"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Paseo_de_la_Reforma_Skyline_Mexico_City.jpg?width=200" alt="CDMX"></div><div class="city-name">CDMX (AICM)</div><div class="city-date">13 ago · AM90 20:40</div></div>
+        <div class="route-city"><div class="route-thumb"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Paseo_de_la_Reforma_Skyline_Mexico_City.jpg?width=200" alt="CDMX"></div><div class="city-name">CDMX (AICM)</div><div class="city-date">13 ago · sale 20:40</div></div>
         <div class="route-city major"><div class="route-thumb"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Seoul_Night_Skyline_2022.jpg?width=200" alt="Seúl"></div><div class="city-name">Seúl</div><div class="city-date">15–16 ago · 1 noche</div></div>
         <div class="route-city major"><div class="route-thumb"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Shenyang_Zhongjie.jpg?width=200" alt="Shenyang"></div><div class="city-name">Shenyang</div><div class="city-date">16–22 ago · IEEE CASE</div></div>
         <div class="route-city"><div class="route-thumb"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Incheon_International_Airport_Terminal_1_Departure.jpg?width=200" alt="Incheon"></div><div class="city-name">Incheon</div><div class="city-date">22–23 ago · pernocta</div></div>
@@ -319,20 +378,20 @@
   </div>
 
   <div class="route-legend">
-    <span><i style="background:#e3b464"></i> Aeroméxico AM90 / AM91 — MEX ↔ ICN</span>
-    <span><i style="background:#6fb1e0"></i> China Southern CZ652 / CZ671 — ICN ↔ SHE</span>
-    <span><i style="background:#d9695f"></i> IEEE CASE 2026 — Shenyang New World EXPO</span>
+    <span><i style="background:#e3b464"></i> Aeroméxico — MEX ↔ ICN</span>
+    <span><i style="background:#6fb1e0"></i> China Southern — ICN ↔ SHE</span>
+    <span><i style="background:#d9695f"></i> IEEE CASE 2026 — Shenyang, China</span>
   </div>
 
   <div class="info-grid">
-    <div class="info-card"><i class="fa-solid fa-plane"></i><h4>Aeroméxico #UIFOPC</h4><p>MEX↔ICN, escala en Monterrey a la ida. Asientos 29A (ida) / 35J (regreso), ventana.</p></div>
-    <div class="info-card"><i class="fa-solid fa-plane-arrival"></i><h4>China Southern QGDYR5</h4><p>ICN↔SHE directo, 2h. CZ652 (16 ago) y CZ671 (22 ago).</p></div>
-    <div class="info-card"><i class="fa-solid fa-hotel"></i><h4>New World Shenyang Hotel</h4><p>5 estrellas, encima de la estación de metro Wulihe. Pagado íntegramente por IBERO Puebla.</p></div>
+    <div class="info-card"><i class="fa-solid fa-plane"></i><h4>Aeroméxico</h4><p>MEX↔ICN, escala en Monterrey a la ida. Vuelo de ventana ambos tramos.</p></div>
+    <div class="info-card"><i class="fa-solid fa-plane-arrival"></i><h4>China Southern</h4><p>ICN↔SHE directo, 2 horas, ida y vuelta.</p></div>
+    <div class="info-card"><i class="fa-solid fa-hotel"></i><h4>Hotel en Shenyang</h4><p>5 estrellas, en el centro de la ciudad. Pagado íntegramente por IBERO Puebla.</p></div>
   </div>
 
   <div class="gallery-strip" style="margin-top:32px;">
     <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Zocalo_de_Puebla.JPG?width=500" alt="Zócalo de Puebla"></div><div class="gallery-cap"><h5>Puebla</h5><span>Punto de partida</span></div></div>
-    <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Boeing_787-8_Dreamliner,_Aeromexico_JP7669417.jpg?width=500" alt="Boeing 787 Aeroméxico"></div><div class="gallery-cap"><h5>Aeroméxico #UIFOPC</h5><span>MEX ↔ ICN</span></div></div>
+    <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Boeing_787-8_Dreamliner,_Aeromexico_JP7669417.jpg?width=500" alt="Boeing 787 Aeroméxico"></div><div class="gallery-cap"><h5>Aeroméxico</h5><span>MEX ↔ ICN</span></div></div>
     <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Seoul_Night_Skyline_2022.jpg?width=500" alt="Seúl de noche"></div><div class="gallery-cap"><h5>Seúl</h5><span>Escala de 1 noche</span></div></div>
     <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Shenyang_Skyline_-_Tiexi.jpg?width=500" alt="Skyline de Shenyang"></div><div class="gallery-cap"><h5>Shenyang</h5><span>Destino final — IEEE CASE</span></div></div>
   </div>
@@ -343,6 +402,14 @@
   <div class="eyebrow"><i class="fa-solid fa-torii-gate"></i> Sábado 15 de agosto</div>
   <h2 class="title">Un día entero para conocer Seúl</h2>
   <p class="lead">Aterriza a las 6 de la mañana con casi 20 horas por delante antes de volar a China. Palacios, un mercado centenario, un cerro con vistas de la ciudad y la calle más viva de Seúl — todo en un solo día.</p>
+
+  <div class="cover-banner">
+    <img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Gwanghwamun_is_the_main_gate_to_the_south_of_Gyeongbokgung_Palace.jpg?width=1400" alt="Puerta Gwanghwamun, entrada al Palacio Gyeongbokgung, Seúl">
+    <div class="cover-banner-content">
+      <div class="venue-badge"><i class="fa-solid fa-torii-gate"></i> Seúl, Corea del Sur</div>
+      <h3>Un sábado entero para recorrer la capital coreana</h3>
+    </div>
+  </div>
 
   <div class="timeline">
 
@@ -408,7 +475,7 @@
       </div></div>
 
     <div class="tl-item"><div class="tl-time">20:30</div><div class="tl-rail"><div class="tl-dot"></div></div>
-      <div class="tl-card"><h3><i class="fa-solid fa-bed"></i> Check-in en Lazy Cube Hongdae</h3>
+      <div class="tl-card"><h3><i class="fa-solid fa-bed"></i> Check-in en su hospedaje de Hongdae</h3>
         <p>A descansar — al día siguiente vuela a Shenyang para el congreso.</p></div></div>
 
   </div>
@@ -417,6 +484,7 @@
     <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Gyeongbokgung-Guard.ceremony-05.jpg?width=500" alt="Cambio de guardia real, Gyeongbokgung"></div><div class="gallery-cap"><h5>Cambio de guardia</h5><span>Puerta Gwanghwamun, 10:00</span></div></div>
     <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Tteokbokki.JPG?width=500" alt="Tteokbokki"></div><div class="gallery-cap"><h5>Tteokbokki</h5><span>Street food en Myeongdong</span></div></div>
     <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Hongdae_Party_District_at_Night,_Seoul.jpg?width=500" alt="Hongdae de noche"></div><div class="gallery-cap"><h5>Hongdae</h5><span>Donde duerme esa noche</span></div></div>
+    <div class="gallery-item"><div class="img-wrap"><img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Love_padlock_trees_N_Seoul_Tower.JPG?width=500" alt="Candados del amor en la Torre de Seúl"></div><div class="gallery-cap"><h5>Candados del amor</h5><span>Base de la Torre de Seúl</span></div></div>
   </div>
 </section>
 
@@ -426,10 +494,10 @@
   <h2 class="title">IEEE CASE 2026 — su primer congreso internacional</h2>
   <p class="lead">La razón de todo el viaje: Alessandro presenta su investigación ante la comunidad internacional de robótica y automatización, como Undergraduate Researcher de la Ibero Puebla.</p>
 
-  <div class="ieee-hero">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mukden_Palace_in_Shenyang.jpg?width=1400" alt="Shenyang, China — sede de IEEE CASE 2026">
-    <div class="ieee-hero-content">
-      <div class="venue-badge"><i class="fa-solid fa-location-dot"></i> Shenyang New World EXPO, Liaoning, China</div>
+  <div class="cover-banner">
+    <img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Mukden_Palace_in_Shenyang.jpg?width=1400" alt="Shenyang, China — sede de IEEE CASE 2026">
+    <div class="cover-banner-content">
+      <div class="venue-badge"><i class="fa-solid fa-location-dot"></i> Shenyang, Liaoning, China</div>
       <h3>22nd IEEE International Conference on Automation Science and Engineering</h3>
     </div>
   </div>
@@ -438,7 +506,7 @@
     <div class="paper-num">PAPER #599 · REGULAR PAPER ACEPTADO</div>
     <div class="paper-title">"Edge AI Decision Framework: Quantifying the Sensitivity-Latency Trade-off in Industrial Bearing Predictive Maintenance"</div>
     <div class="paper-meta">
-      <div>Autor<strong>Jordi Alessandro Reyes Martinez</strong></div>
+      <div>Autor<strong>Alessandro Reyes</strong></div>
       <div>Institución<strong>Universidad Iberoamericana Puebla</strong></div>
       <div>Rol<strong>Undergraduate Researcher</strong></div>
       <div>Distinción<strong>Nominado a Best Student Paper</strong></div>
@@ -490,15 +558,18 @@
   <h2 class="title">El regreso a casa</h2>
   <p class="lead">Después del congreso, un último salto a Corea, una noche en el aeropuerto de Incheon y un vuelo directo de casi 15 horas de vuelta a México.</p>
 
-  <div class="img-wrap" style="height:280px; margin-bottom:32px; border:1px solid var(--border);">
+  <div class="cover-banner">
     <img class="credit-src" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Incheon_International_Airport_Terminal_1_Departure.jpg?width=1400" alt="Terminal 1, Aeropuerto Internacional de Incheon">
-    <div class="img-cred">Wikimedia Commons</div>
+    <div class="cover-banner-content">
+      <div class="venue-badge"><i class="fa-solid fa-plane-arrival"></i> Incheon, Corea del Sur</div>
+      <h3>Última escala antes de cerrar el círculo</h3>
+    </div>
   </div>
 
   <div class="return-strip">
-    <div class="return-step"><div class="rs-num">22 AGO · 18:00</div><h4>Sale de Shenyang</h4><p>CZ671, vuelo directo SHE→ICN, 1h50 de duración.</p></div>
+    <div class="return-step"><div class="rs-num">22 AGO · 18:00</div><h4>Sale de Shenyang</h4><p>Vuelo directo SHE→ICN, 1h50 de duración.</p></div>
     <div class="return-step"><div class="rs-num">22 AGO · 20:50</div><h4>Aterriza en Incheon</h4><p>Pernocta en un spa 24/7 del aeropuerto (T1) — ducha, sauna y descanso, como hacen los coreanos en conexiones largas.</p></div>
-    <div class="return-step"><div class="rs-num">23 AGO · 11:40</div><h4>Vuelo a México</h4><p>AM91, directo ICN→MEX, 14h45. Cruza la línea de fecha: sale domingo y llega el mismo domingo, más temprano.</p></div>
+    <div class="return-step"><div class="rs-num">23 AGO · 11:40</div><h4>Vuelo a México</h4><p>Directo ICN→MEX, 14h45. Cruza la línea de fecha: sale domingo y llega el mismo domingo, más temprano.</p></div>
     <div class="return-step"><div class="rs-num">23 AGO · ~14:00</div><h4>De vuelta en Puebla</h4><p>Estrella Roja de regreso a CAPU y Uber a casa. Cierra el círculo de 10 días.</p></div>
   </div>
 </section>
@@ -506,6 +577,12 @@
 <footer>
   Con cariño, para mis papás — el viaje de Alessandro a IEEE CASE 2026 <span class="heart">♦</span> Puebla · Seúl · Shenyang · agosto 2026
 </footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-cap" id="lightboxCap"></div>
+</div>
 
 <script>
   // starfield background
@@ -564,9 +641,42 @@
     );
   }
 
-  // reveal timeline items + animate finance bars on scroll
+  // reveal timeline items on scroll
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
   }, { threshold: 0.2 });
   document.querySelectorAll('.tl-item').forEach(el => io.observe(el));
+
+  // subtle parallax on hero background (skipped if user prefers reduced motion)
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const heroBg = document.querySelector('.hero-bg img');
+  if (heroBg && !prefersReduced) {
+    window.addEventListener('scroll', () => {
+      const y = Math.min(window.scrollY, 800);
+      heroBg.style.transform = `translateY(${y * 0.15}px) scale(1.08)`;
+    }, { passive: true });
+  }
+
+  // lightbox: tap/click any photo to see it full-screen
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCap = document.getElementById('lightboxCap');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(img){
+    lightboxImg.src = img.currentSrc || img.src;
+    lightboxCap.textContent = img.alt || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('img.credit-src').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img));
+  });
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 </script>
